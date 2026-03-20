@@ -1,24 +1,8 @@
-"""
-任务4.5：案例：无人机遥感样点数据的统计描述
-教材：《无人机遥感数据处理与分析》第四章
-作者：[你的姓名]
-日期：2026年3月
-
-本文件演示无人机遥感样点数据的统计描述分析方法
-包括基本统计量计算、分组统计、数据质量评估、异常值检测等
-"""
-
 import pandas as pd
 import numpy as np
 
-print("=" * 60)
-print("任务4.5：无人机遥感样点数据的统计描述")
-print("=" * 60)
-
-# ============================================================================
-# 1. 数据准备：创建无人机遥感样点数据
-# ============================================================================
-print("\n第一步：创建无人机遥感样点数据")
+# ========== 第一步：创建无人机遥感样点数据 ==========
+print("第一步：创建无人机遥感样点数据")
 print("=" * 50)
 
 data = {
@@ -43,13 +27,11 @@ print("无人机遥感样点数据:")
 print(df)
 print(f"\n数据形状: {df.shape}")
 
-# ============================================================================
-# 2. 基本统计量计算
-# ============================================================================
+# ========== 第二步：基本统计量计算 ==========
 print("\n第二步：基本统计量计算")
 print("=" * 50)
 
-# NDVI基本统计量
+# 计算NDVI的基本统计量
 print("NDVI基本统计量:")
 print(f"  平均值: {df['NDVI'].mean():.4f}")
 print(f"  中位数: {df['NDVI'].median():.4f}")
@@ -58,26 +40,17 @@ print(f"  最小值: {df['NDVI'].min():.4f}")
 print(f"  最大值: {df['NDVI'].max():.4f}")
 print(f"  极差: {df['NDVI'].max() - df['NDVI'].min():.4f}")
 
-# LST基本统计量
+# 计算LST的基本统计量
 print("\nLST基本统计量:")
 print(f"  平均值: {df['LST'].mean():.2f}℃")
 print(f"  中位数: {df['LST'].median():.2f}℃")
 print(f"  标准差: {df['LST'].std():.2f}℃")
 
-# 温度基本统计量
-print("\n温度基本统计量:")
-print(f"  平均值: {df['温度'].mean():.2f}℃")
-print(f"  中位数: {df['温度'].median():.2f}℃")
-print(f"  第25百分位: {df['温度'].quantile(0.25):.2f}℃")
-print(f"  第75百分位: {df['温度'].quantile(0.75):.2f}℃")
-
 # 批量计算所有数值列的统计量
 print("\n所有数值列的统计摘要:")
 print(df.describe())
 
-# ============================================================================
-# 3. 分组统计分析
-# ============================================================================
+# ========== 第三步：分组统计分析 ==========
 print("\n第三步：分组统计分析")
 print("=" * 50)
 
@@ -96,14 +69,7 @@ print("\n各区域样点数量:")
 count_by_area = df.groupby('区域').size()
 print(count_by_area)
 
-# 各地物类型样点数量
-print("\n各地物类型样点数量:")
-count_by_type = df.groupby('地物类型').size()
-print(count_by_type)
-
-# ============================================================================
-# 4. 数据质量评估
-# ============================================================================
+# ========== 第四步：数据质量评估 ==========
 print("\n第四步：数据质量评估")
 print("=" * 50)
 
@@ -112,38 +78,27 @@ print("1. 缺失值检测:")
 missing_values = df.isnull().sum()
 print(missing_values)
 
-if missing_values.sum() == 0:
-    print("  数据完整，无缺失值")
-else:
-    print(f"  共发现 {missing_values.sum()} 个缺失值")
-
 # 重复值检测
 print("\n2. 重复值检测:")
 duplicate_count = df.duplicated().sum()
 print(f"  重复行数: {duplicate_count}")
-if duplicate_count == 0:
-    print("  无重复记录")
-else:
-    print("  发现重复记录，建议核查")
 
 # 数据类型检查
 print("\n3. 数据类型检查:")
 print(df.dtypes)
 
-# ============================================================================
-# 5. 异常值检测与处理
-# ============================================================================
+# ========== 第五步：异常值检测与处理 ==========
 print("\n第五步：异常值检测与处理")
 print("=" * 50)
 
 # 使用IQR方法检测LST异常值
-print("LST异常值检测（IQR方法）:")
 Q1 = df['LST'].quantile(0.25)
 Q3 = df['LST'].quantile(0.75)
 IQR = Q3 - Q1
 lower_bound = Q1 - 1.5 * IQR
 upper_bound = Q3 + 1.5 * IQR
 
+print("LST异常值检测（IQR方法）:")
 print(f"  Q1: {Q1:.2f}℃")
 print(f"  Q3: {Q3:.2f}℃")
 print(f"  IQR: {IQR:.2f}℃")
@@ -170,57 +125,35 @@ else:
     df_clean = df.copy()
     print("  未发现异常值")
 
-# ============================================================================
-# 6. 统计结果汇总
-# ============================================================================
+# ========== 第六步：统计结果汇总 ==========
 print("\n第六步：统计结果汇总")
 print("=" * 50)
 
 print("汇总统计结果:")
 print("-" * 40)
 
-# NDVI分布特征
 print("1. NDVI分布特征:")
-ndvi_mean = df['NDVI'].mean()
-ndvi_std = df['NDVI'].std()
-print(f"   平均NDVI为{ndvi_mean:.3f}，表明区域植被状况{'良好' if ndvi_mean > 0.7 else '一般'}")
-print(f"   NDVI标准差为{ndvi_std:.4f}，表明植被覆盖度分布相对{'均匀' if ndvi_std < 0.1 else '分散'}")
+print(f"   平均NDVI为{df['NDVI'].mean():.3f}，表明区域植被状况{'' if df['NDVI'].mean() > 0.7 else ''}良好")
+print(f"   NDVI标准差为{df['NDVI'].std():.4f}，表明植被覆盖度分布相对{'均匀' if df['NDVI'].std() < 0.1 else '分散'}")
 
-# 区域间差异
 print("\n2. 区域间差异:")
 area_ndvi = df.groupby('区域')['NDVI'].mean()
 highest_area = area_ndvi.idxmax()
 lowest_area = area_ndvi.idxmin()
-area_diff = area_ndvi[highest_area] - area_ndvi[lowest_area]
-
 print(f"   {highest_area}区域NDVI最高({area_ndvi[highest_area]:.3f})")
 print(f"   {lowest_area}区域NDVI最低({area_ndvi[lowest_area]:.3f})")
-print(f"   区域间差异为{area_diff:.3f}")
+print(f"   区域间差异为{area_ndvi[highest_area] - area_ndvi[lowest_area]:.3f}")
 
-# 地物类型间差异
 print("\n3. 地物类型间差异:")
 type_ndvi = df.groupby('地物类型')['NDVI'].mean()
-for land_type, ndvi_val in type_ndvi.items():
-    print(f"   {land_type}: {ndvi_val:.3f}")
+print(type_ndvi)
 
-# 数据质量评估
 print("\n4. 数据质量评估:")
 if missing_values.sum() == 0 and duplicate_count == 0:
     print("   数据质量良好，无缺失值和重复值")
 else:
     print(f"   数据存在问题：{missing_values.sum()}个缺失值，{duplicate_count}个重复值")
 
-# 温湿度相关性
-print("\n5. 温湿度相关性:")
-correlation = df[['温度', '湿度']].corr()
-print(f"   相关系数: {correlation.iloc[0, 1]:.4f}")
-if abs(correlation.iloc[0, 1]) > 0.5:
-    print("   温湿度相关性较强")
-elif abs(correlation.iloc[0, 1]) > 0.3:
-    print("   温湿度相关性中等")
-else:
-    print("   温湿度相关性较弱")
-
-print("\n" + "=" * 60)
+print("\n" + "=" * 50)
 print("任务4.5 统计描述分析完成")
-print("=" * 60)
+print("=" * 50)
